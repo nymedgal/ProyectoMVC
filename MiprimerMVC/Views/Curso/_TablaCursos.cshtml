@@ -1,0 +1,30 @@
+﻿<div class="container-fluid mt-4">
+    <h2 class="mb-4">Lista de Cursos</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered w-auto">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Creación</th>
+                    <th>Creado</th>
+                    <th>Modificación</th>
+                    <th>Modificado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var curso in Model)
+                {
+                    <tr>
+                        <td>@(curso.Nombre ?? "N/A")</td>
+                        <td>@(curso.Descripcion ?? "N/A")</td>
+                        <td>@(curso.FechaCreacion != null ? curso.FechaCreacion.ToString("dd/MM/yyyy") : "N/A")</td>
+                        <td>@(curso.CreadoPor ?? "N/A")</td>
+                        <td>@(curso.FechaModificacion != null ? curso.FechaModificacion.ToString("dd/MM/yyyy") : "N/A")</td>
+                        <td>@(curso.ModificadoPor ?? "N/A")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

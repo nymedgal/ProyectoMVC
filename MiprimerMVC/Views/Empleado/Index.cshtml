@@ -1,0 +1,196 @@
+﻿@using MiprimerMVC.Models.Clases;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@model List<MiprimerMVC.Models.Clases.EmpleadoClase>
+
+<h2>Vista Empleados</h2>
+
+<hr />
+
+<!-- SweetAlert  -->
+<script src="~/Scripts/sweetalert-helpers.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+            mostrarMensajeError('@TempData["ErrorMessage"]');
+    </script>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+            mostrarMensajeExito('@TempData["SuccessMessage"]');
+    </script>
+}
+
+<div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Agregar Empleado
+    </button>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#previewModal">
+        Descargar Excel
+    </button>
+
+</div>
+
+<hr />
+
+<div class="table-responsive mt-3">
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <td>Nombre</td>
+                <td>Apellido</td>
+                <td>Usuario</td>
+                <td>Operaciones</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Nombre</td>
+                    <td>@item.Apellido</td>
+                    <td>@item.Usuario</td>
+                    <td>
+                        <button type="button" class="glyphicon glyphicon-edit btn btn-primary" onclick="abrirModalEditar(@item.IdEmpleado)"></button>
+                        @*<button type="button" class="glyphicon glyphicon-trash btn btn-danger" onclick="confirmarEliminacionEmpleado(@item.IdEmpleado, '@Url.Action("Eliminar", "Empleado")')"></button>*@
+                        <button type="button" class="glyphicon glyphicon-trash btn btn-danger" onclick="confirmarAccion('No podrás recuperar este empleado!', 'Sí, eliminar', 'eliminar', @item.IdEmpleado, '@Url.Action("Eliminar", "Empleado")', 'IdEmpleado')"></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Vista Excel -->
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Vista Previa de la Tabla</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Aquí se cargará la tabla -->
+                @Html.Action("VistaPreviaTabla")
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="exportarExcel()">Exportar a Excel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Agregar -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">
+                    Agregar Curso
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </h3>
+            </div>
+            @using (Html.BeginForm("Agregar", "Empleado", FormMethod.Post, new { id = "agregarForm" }))
+            {
+                <div class="modal-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="mb-3">
+                        <label for="Nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="Nombre" name="Nombre" placeholder="Nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Apellido" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" id="Apellido" name="Apellido" placeholder="Apellido" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Usuario" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="Usuario" name="Usuario" placeholder="Nombre del Usuario" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Contraseña" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="Contraseña" name="Contraseña" placeholder="Contraseña" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Regresar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar -->
+<div class="modal fade" id="editarModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">
+                    Editar Curso
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Editar", "Emplado", FormMethod.Post, new { id = "editarForm" }))
+                {
+                    @Html.Hidden("IdCurso")
+                    <div class="mb-3">
+                        <label for="Nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="Nombre" name="Nombre" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Apellido" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" id="Apellido" name="Apellido" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Usuario" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="Usuario" name="Usuario" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Contraseña" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="Contrasena" name="Contraseña" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Regresar</button>
+                        <button type="button" class="btn btn-primary" onclick="confirmarActualizacionEmpleado()">Guardar</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /*llenado del modal*/
+    function abrirModalEditar(idEmpleado) {
+        fetch('@Url.Action("Editar", "Empleado")?id=' + idEmpleado)
+            .then(response => response.json())
+            .then(data => {
+                $('#editarModal #IdEmpleado').val(data.IdEmpleado);
+                $('#editarModal #Nombre').val(data.Nombre);
+                $('#editarModal #Apellido').val(data.Apellido);
+                $('#editarModal #Usuario').val(data.Usuario);
+                $('#editarModal #Contrasena').val(data.Contrasena);
+                $('#editarModal').modal('show');
+            })
+            .catch(error => console.error('Error al cargar los datos del empleado:', error));
+    }
+</script>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")

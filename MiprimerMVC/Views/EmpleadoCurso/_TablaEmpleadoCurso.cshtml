@@ -1,0 +1,30 @@
+﻿
+@model IEnumerable<MiprimerMVC.Models.Clases.VistaEmpleadoCursoViewModel>
+
+<div class="table-responsive mt-3">
+    <table id="miTabla" class="table table-striped table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Fecha de Creación</th>
+                <th>Creado Por</th>
+                @*<th>Fecha de Modificación</th>
+                <th>Modificado Por</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) // Usando "Model" (mayúscula)
+            {
+                <tr>
+                    <td>@item.Nombre</td>
+                    <td>@item.CursoDescripcion</td>
+                    <td>@(item.FechaCreacion.HasValue ? item.FechaCreacion.Value.ToString("dd/MM/yyyy") : "N/A")</td>
+                    <td>@item.CreadoPor</td>
+                    @*<td>@(item.FechaModificacion.HasValue ? item.FechaModificacion.Value.ToString("dd/MM/yyyy") : "N/A")</td>
+                    <td>@item.ModificadoPor</td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

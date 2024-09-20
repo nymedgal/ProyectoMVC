@@ -1,0 +1,225 @@
+﻿@using MiprimerMVC.Models.Clases;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@model List<MiprimerMVC.Models.Clases.EmpleadosCursosClase>
+
+<h2>Empleados Cursos</h2>
+
+@{
+    var listaCursos = Session["listaCursos"] as List<MiprimerMVC.Models.MVC_Cursos>;  // Asegúrate de que la lista está en la Session
+}
+
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+<!-- SweetAlert  -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- SweetAlert antes de tu script -->
+<script src="~/Scripts/sweetalert-helpers.js"></script>  <!-- Tu archivo helpers.js debe ir después de jQuery y SweetAlert -->
+
+<hr />
+
+<!-- DataTable  -->
+
+@*<link rel="stylesheet" href="https://cdn.datatables.net/2.1.6/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.1.6/js/dataTables.js"></script>*@
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.1.7/css/dataTables.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/3.1.2/css/buttons.dataTables.css">
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/dataTables.buttons.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.print.min.js"></script>
+
+
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+            mostrarMensajeError('@TempData["ErrorMessage"]');
+    </script>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+            mostrarMensajeExito('@TempData["SuccessMessage"]');
+    </script>
+}
+
+@*@if (ViewBag.SuccessMessage != null)
+    {
+        <p>@ViewBag.SuccessMessage</p>
+    }*@
+<div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAgregarCurso">
+        Agregar Empleado Curso
+    </button>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#previewModal">
+        Descargar Excel
+    </button>
+
+    <button type="button" class="btn btn-success" onclick="exportarExcelSeleccionados()">
+        Exportar Excel Seleccionado
+    </button>
+
+    <button type="button" class="btn btn-danger" onclick="eliminarSeleccionados()">
+        Eliminar Seleccionados
+    </button>
+</div>
+
+<hr />
+
+<div class="table-responsive mt-3">
+    <table id="miTabla" class="table table-striped table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <td>Seleccionar</td>
+                <td>Nombre Completo</td>
+                <td>Curso</td>
+                <td>Descripción</td>
+                <td>Operaciones</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" class="seleccionarEmpleado" value="@item.IdEmpleado" data-curso="@item.IdCurso" />
+                    </td>
+                    <td>@item.NombreCompleto</td>
+                    <td>@item.Nombre</td>
+                    <td>@item.Descripcion</td>
+                    <td>
+                        @*<button type="button" class="glyphicon glyphicon-edit btn btn-primary" onclick="abrirModalEditar(@item.IdEmpleado, @item.IdCurso)"></button>*@
+                        <button type="button" class="glyphicon glyphicon-trash btn btn-danger" onclick="confirmarAccion2('No podra revertir la eliminacion!', 'Sí, eliminar', 'eliminar', @item.IdEmpleado,@item.IdCurso, '@Url.Action("Eliminar", "EmpleadoCurso")', 'IdEmpleado', 'IdCurso')"></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Agregar -->
+<div class="modal fade" id="modalAgregarCurso" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalAgregarCursoLabel">
+                    Asignar Curso a Empleado
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </h3>
+            </div>
+            @using (Html.BeginForm("Agregar", "EmpleadoCurso", FormMethod.Post, new { id = "agregarCursoForm" }))
+            {
+                <div class="modal-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="mb-3">
+                        <label for="EmpleadoId" class="form-label">Selecciona un Empleado</label>
+                        <select class="form-control" id="EmpleadoId" name="IdEmpleado" required>
+                            @foreach (var empleado in (List<MiprimerMVC.Models.MVC_Empleados>)Session["listaEmpleados"])
+                            {
+                                <option value="@empleado.IdEmpleado">@empleado.Nombre</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="CursoId" class="form-label">Selecciona un Curso</label>
+                        <select class="form-control" id="CursoId" name="IdCurso" required>
+                            @foreach (var curso in (List<MiprimerMVC.Models.MVC_Cursos>)Session["listaCursos"])
+                            {
+                                <option value="@curso.IdCurso">@curso.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Regresar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal Vista Excel -->
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Vista Previa de la Tabla</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Aquí se cargará la tabla -->
+                @Html.Action("VistaPreviaTabla")
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="exportarExcel()">Exportar a Excel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var eliminarMasivamenteUrl = '@Url.Action("EliminarMasivamente", "EmpleadoCurso")';
+
+    jQuery.noConflict();
+    jQuery(document).ready(function ($) {
+        // Inicializa la DataTable
+        $('#miTabla').DataTable({
+            searching: true,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
+            },
+            lengthMenu: [10, 25, 50, { label: 'Todos', value: -1 }],
+            layout: {
+                top9Start: {
+                    buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                }
+            }
+        });
+    });
+
+    function exportarExcel() {
+        window.location.href = '@Url.Action("ExportarExcel", "EmpleadoCurso")';
+    }
+
+function exportarExcelSeleccionados() {
+    const selectedEmpleados = [];
+    const selectedCursos = [];
+
+    document.querySelectorAll('.seleccionarEmpleado:checked').forEach((checkbox) => {
+        selectedEmpleados.push(checkbox.value); // Agregar IdEmpleado
+        selectedCursos.push(checkbox.dataset.curso); // Agregar IdCurso desde el atributo data-curso
+    });
+
+    if (selectedEmpleados.length > 0) {
+        const idsEString = selectedEmpleados.join(',');
+        const idsCString = selectedCursos.join(',');
+        window.location.href = '@Url.Action("ExportarExcelSeleccionados", "EmpleadoCurso")' + '?idsE=' + idsEString + '&idsC=' + idsCString;
+    } else {
+        Swal.fire('No se han seleccionado empleados.', 'Por favor selecciona al menos un empleado para exportar.', 'warning');
+    }
+}
+
+
+
+</script>
+
+

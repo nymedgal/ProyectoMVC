@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MVCPruebasModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="MVC_Cursos">
+    <Key>
+      <PropertyRef Name="IdCurso" />
+    </Key>
+    <Property Name="IdCurso" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nombre" Type="nvarchar" MaxLength="100" />
+    <Property Name="Descripcion" Type="nvarchar" MaxLength="200" />
+    <Property Name="FechaCreacion" Type="datetime" />
+    <Property Name="CreadoPor" Type="int" />
+    <Property Name="FechaModificacion" Type="datetime" />
+    <Property Name="ModificadoPor" Type="int" />
+  </EntityType>
+  <EntityType Name="MVC_Empleados">
+    <Key>
+      <PropertyRef Name="IdEmpleado" />
+    </Key>
+    <Property Name="IdEmpleado" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nombre" Type="nvarchar" MaxLength="50" />
+    <Property Name="Apellido" Type="nvarchar" MaxLength="50" />
+    <Property Name="Usuario" Type="nvarchar" MaxLength="50" />
+    <Property Name="Contrasena" Type="nvarchar" MaxLength="100" />
+    <Property Name="FechaCreacion" Type="datetime" />
+    <Property Name="FechaModificacion" Type="datetime" />
+    <Property Name="ModificadoPor" Type="int" />
+  </EntityType>
+  <EntityType Name="MVC_EmpleadosCursos">
+    <Key>
+      <PropertyRef Name="IdEmpleado" />
+      <PropertyRef Name="IdCurso" />
+    </Key>
+    <Property Name="IdEmpleado" Type="int" Nullable="false" />
+    <Property Name="IdCurso" Type="int" Nullable="false" />
+    <Property Name="FechaCreacion" Type="datetime" />
+    <Property Name="CreadoPor" Type="int" />
+    <Property Name="FechaModificacion" Type="datetime" />
+    <Property Name="ModificadoPor" Type="int" />
+  </EntityType>
+  <Association Name="FK__MVC_Curso__Cread__286302EC">
+    <End Role="MVC_Empleados" Type="Self.MVC_Empleados" Multiplicity="0..1" />
+    <End Role="MVC_Cursos" Type="Self.MVC_Cursos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MVC_Empleados">
+        <PropertyRef Name="IdEmpleado" />
+      </Principal>
+      <Dependent Role="MVC_Cursos">
+        <PropertyRef Name="CreadoPor" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__MVC_Curso__Modif__29572725">
+    <End Role="MVC_Empleados" Type="Self.MVC_Empleados" Multiplicity="0..1" />
+    <End Role="MVC_Cursos" Type="Self.MVC_Cursos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MVC_Empleados">
+        <PropertyRef Name="IdEmpleado" />
+      </Principal>
+      <Dependent Role="MVC_Cursos">
+        <PropertyRef Name="ModificadoPor" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__MVC_Emple__Cread__2F10007B">
+    <End Role="MVC_Empleados" Type="Self.MVC_Empleados" Multiplicity="0..1" />
+    <End Role="MVC_EmpleadosCursos" Type="Self.MVC_EmpleadosCursos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MVC_Empleados">
+        <PropertyRef Name="IdEmpleado" />
+      </Principal>
+      <Dependent Role="MVC_EmpleadosCursos">
+        <PropertyRef Name="CreadoPor" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__MVC_Emple__IdCur__2D27B809">
+    <End Role="MVC_Cursos" Type="Self.MVC_Cursos" Multiplicity="1" />
+    <End Role="MVC_EmpleadosCursos" Type="Self.MVC_EmpleadosCursos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MVC_Cursos">
+        <PropertyRef Name="IdCurso" />
+      </Principal>
+      <Dependent Role="MVC_EmpleadosCursos">
+        <PropertyRef Name="IdCurso" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__MVC_Emple__IdEmp__2C3393D0">
+    <End Role="MVC_Empleados" Type="Self.MVC_Empleados" Multiplicity="1" />
+    <End Role="MVC_EmpleadosCursos" Type="Self.MVC_EmpleadosCursos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MVC_Empleados">
+        <PropertyRef Name="IdEmpleado" />
+      </Principal>
+      <Dependent Role="MVC_EmpleadosCursos">
+        <PropertyRef Name="IdEmpleado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__MVC_Emple__Modif__300424B4">
+    <End Role="MVC_Empleados" Type="Self.MVC_Empleados" Multiplicity="0..1" />
+    <End Role="MVC_EmpleadosCursos" Type="Self.MVC_EmpleadosCursos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MVC_Empleados">
+        <PropertyRef Name="IdEmpleado" />
+      </Principal>
+      <Dependent Role="MVC_EmpleadosCursos">
+        <PropertyRef Name="ModificadoPor" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="MVCPruebasModelStoreContainer">
+    <EntitySet Name="MVC_Cursos" EntityType="Self.MVC_Cursos" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MVC_Empleados" EntityType="Self.MVC_Empleados" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MVC_EmpleadosCursos" EntityType="Self.MVC_EmpleadosCursos" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__MVC_Curso__Cread__286302EC" Association="Self.FK__MVC_Curso__Cread__286302EC">
+      <End Role="MVC_Empleados" EntitySet="MVC_Empleados" />
+      <End Role="MVC_Cursos" EntitySet="MVC_Cursos" />
+    </AssociationSet>
+    <AssociationSet Name="FK__MVC_Curso__Modif__29572725" Association="Self.FK__MVC_Curso__Modif__29572725">
+      <End Role="MVC_Empleados" EntitySet="MVC_Empleados" />
+      <End Role="MVC_Cursos" EntitySet="MVC_Cursos" />
+    </AssociationSet>
+    <AssociationSet Name="FK__MVC_Emple__Cread__2F10007B" Association="Self.FK__MVC_Emple__Cread__2F10007B">
+      <End Role="MVC_Empleados" EntitySet="MVC_Empleados" />
+      <End Role="MVC_EmpleadosCursos" EntitySet="MVC_EmpleadosCursos" />
+    </AssociationSet>
+    <AssociationSet Name="FK__MVC_Emple__IdCur__2D27B809" Association="Self.FK__MVC_Emple__IdCur__2D27B809">
+      <End Role="MVC_Cursos" EntitySet="MVC_Cursos" />
+      <End Role="MVC_EmpleadosCursos" EntitySet="MVC_EmpleadosCursos" />
+    </AssociationSet>
+    <AssociationSet Name="FK__MVC_Emple__IdEmp__2C3393D0" Association="Self.FK__MVC_Emple__IdEmp__2C3393D0">
+      <End Role="MVC_Empleados" EntitySet="MVC_Empleados" />
+      <End Role="MVC_EmpleadosCursos" EntitySet="MVC_EmpleadosCursos" />
+    </AssociationSet>
+    <AssociationSet Name="FK__MVC_Emple__Modif__300424B4" Association="Self.FK__MVC_Emple__Modif__300424B4">
+      <End Role="MVC_Empleados" EntitySet="MVC_Empleados" />
+      <End Role="MVC_EmpleadosCursos" EntitySet="MVC_EmpleadosCursos" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

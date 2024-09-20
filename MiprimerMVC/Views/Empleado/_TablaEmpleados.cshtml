@@ -1,0 +1,31 @@
+﻿
+<div class="container-fluid mt-4">
+    <h2 class="mb-4">Lista de Empleados</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered w-auto">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Creación</th>
+                    <th>Creado</th>
+                    <th>Modificación</th>
+                    <th>Modificado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var empleados in Model)
+                {
+                    <tr>
+                        <td>@(empleados.Nombre ?? "N/A")</td>
+                        <td>@(empleados.Apellido ?? "N/A")</td>
+                        <td>@(empleados.Usuario ?? "N/A")</td>
+                        <td>@(empleados.FechaCreacion != null ? empleados.FechaCreacion.ToString("dd/MM/yyyy") : "N/A")</td>
+                        <td>@(empleados.FechaModificacion != null ? empleados.FechaModificacion.ToString("dd/MM/yyyy") : "N/A")</td>
+                        <td>@(empleados.ModificadoPor ?? "N/A")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
