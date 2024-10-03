@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
@@ -28,6 +28,21 @@
                     <li>@Html.ActionLink("Cursos", "Index", "Curso")</li>
                     <li>@Html.ActionLink("EmpleadosCursos", "Index", "EmpleadoCurso")</li>
                 </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                        <li>
+                            @using (Html.BeginForm("Logout", "Account", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken() <!-- Protección contra CSRF -->
+                                <button type="submit" class="btn btn-danger navbar-btn">Cerrar Sesión</button>
+                            }
+                        </li>
+                    }
+
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -43,10 +58,8 @@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 
-
     <script src="~/Scripts/sweetalert-helpers.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 </body>
 </html>

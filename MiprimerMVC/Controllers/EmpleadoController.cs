@@ -9,6 +9,7 @@ using MiprimerMVC.Controllers.Helpers;
 
 namespace MiprimerMVC.Controllers
 {
+    [Authorize]
     public class EmpleadoController : Controller
     {
         // GET: Empleado
@@ -87,7 +88,7 @@ namespace MiprimerMVC.Controllers
             {
                 using (var bd = new MVCPruebasEntities())
                 {
-                    var usuarioExistente = bd.MVC_Cursos
+                    var usuarioExistente = bd.MVC_Empleados
                         .FirstOrDefault(c => c.Nombre == empleadoClase.Usuario);
 
                     if (usuarioExistente != null)

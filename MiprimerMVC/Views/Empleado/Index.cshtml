@@ -146,9 +146,9 @@
                 </h3>
             </div>
             <div class="modal-body">
-                @using (Html.BeginForm("Editar", "Emplado", FormMethod.Post, new { id = "editarForm" }))
+                @using (Html.BeginForm("Editar", "Empleado", FormMethod.Post, new { id = "editarForm" }))
                 {
-                    @Html.Hidden("IdCurso")
+                    @Html.Hidden("IdEmpleado")
                     <div class="mb-3">
                         <label for="Nombre" class="form-label">Nombre</label>
                         <input type="text" class="form-control" id="Nombre" name="Nombre" />
@@ -167,7 +167,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Regresar</button>
-                        <button type="button" class="btn btn-primary" onclick="confirmarActualizacionEmpleado()">Guardar</button>
+                        <button type="button" class="btn btn-primary" onclick="confirmarActualizacion()">Guardar</button>
                     </div>
                 }
             </div>

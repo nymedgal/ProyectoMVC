@@ -9,6 +9,7 @@ using MiprimerMVC.Controllers.Helpers;
 
 namespace MiprimerMVC.Controllers
 {
+    [Authorize]
     public class EmpleadoCursoController : Controller
     {
         // GET: EmpleadoCurso

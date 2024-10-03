@@ -1,0 +1,38 @@
+﻿@model MiprimerMVC.Models.Clases.EmpleadoClase
+
+@{
+    ViewBag.Title = "Login";
+}
+
+@{
+    Layout = null; // Esto desactiva el uso de un layout
+}
+
+@Styles.Render("~/Content/css")
+@Scripts.Render("~/bundles/modernizr")
+
+
+
+<h2>Login</h2>
+
+@using (Html.BeginForm("Login", "Account", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Usuario)
+        @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control", placeholder = "Ingrese su usuario" })
+        @Html.ValidationMessageFor(m => m.Usuario, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Contrasena)
+        @Html.PasswordFor(m => m.Contrasena, new { @class = "form-control", placeholder = "Ingrese su contraseña" })
+        @Html.ValidationMessageFor(m => m.Contrasena, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+}
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")

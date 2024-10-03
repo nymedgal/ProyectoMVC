@@ -11,6 +11,7 @@ using MiprimerMVC.Controllers.Helpers;
 
 namespace MiprimerMVC.Controllers
 {
+    [Authorize]
     public class CursoController : Controller
     {
         // GET: Curso
